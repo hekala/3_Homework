@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TallinnUniversity.Data;
 
 namespace TallinnUniversity.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20200215121851_RowVersion")]
+    partial class RowVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,6 +100,28 @@ namespace TallinnUniversity.Migrations
                     b.ToTable("Enrollment");
                 });
 
+            modelBuilder.Entity("TallinnUniversity.Models.Instructor", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FirstMidName")
+                        .IsRequired()
+                        .HasColumnName("FirstName")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("HireDate");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Instructor");
+                });
+
             modelBuilder.Entity("TallinnUniversity.Models.OfficeAssignment", b =>
                 {
                     b.Property<int>("InstructorID");
@@ -110,14 +134,13 @@ namespace TallinnUniversity.Migrations
                     b.ToTable("OfficeAssignment");
                 });
 
-            modelBuilder.Entity("TallinnUniversity.Models.Person", b =>
+            modelBuilder.Entity("TallinnUniversity.Models.Student", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
+                    b.Property<DateTime>("EnrollmentDate");
 
                     b.Property<string>("FirstMidName")
                         .IsRequired()
@@ -130,31 +153,7 @@ namespace TallinnUniversity.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Person");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Person");
-                });
-
-            modelBuilder.Entity("TallinnUniversity.Models.Instructor", b =>
-                {
-                    b.HasBaseType("TallinnUniversity.Models.Person");
-
-                    b.Property<DateTime>("HireDate");
-
-                    b.ToTable("Instructor");
-
-                    b.HasDiscriminator().HasValue("Instructor");
-                });
-
-            modelBuilder.Entity("TallinnUniversity.Models.Student", b =>
-                {
-                    b.HasBaseType("TallinnUniversity.Models.Person");
-
-                    b.Property<DateTime>("EnrollmentDate");
-
                     b.ToTable("Student");
-
-                    b.HasDiscriminator().HasValue("Student");
                 });
 
             modelBuilder.Entity("TallinnUniversity.Models.Course", b =>
